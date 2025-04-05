@@ -1,4 +1,13 @@
+import os
+
 # glowna petla
+
+# sprawdzenie czy foldery istnieja
+if os.path.exists("./przygotowane") != True:
+    os.makedirs("./przygotowane")
+if os.path.exists("./odebrane") != True:
+    os.makedirs("./odebrane")
+
 while True:
     print("--------------\nMenu Główne:\n"
           "1. Przygotuj tekst\n"
