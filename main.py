@@ -2,6 +2,7 @@ import os
 import heapq
 import json
 import math
+import socket
 
 def zakodujHuff(tekst):
     drzewo = zbudujDrzewo(tekst)
