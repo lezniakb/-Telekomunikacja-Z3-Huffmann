@@ -104,9 +104,102 @@ def przygotujTekst():
         json.dump(data, plik)
     print("Plik został pomyślnie zapisany: " + sciezka)
 
-# nadaj wiadomosc
+def nadajWiadomosc():
+    folder = ".\\przygotowane"
+    przygotowanePliki = os.listdir(folder)
+    if not przygotowanePliki:
+        print("Brak plików w folderze .\\przygotowane ")
+        return False
 
-# odbierz wiadomosc
+    print("\nPrzygotowane pliki:")
+    for i, plik in enumerate(przygotowanePliki):
+        print(f"{i+1}. {plik}")
+
+    wybor = input("Podaj numer pliku do wysłania: ")
+    indeksPliku = int(wybor) - 1
+    if indeksPliku < 0 or indeksPliku >= len(przygotowanePliki):
+        print("Niewłaściwy wybór")
+        return False
+
+    file_path = os.path.join(folder, przygotowanePliki[indeksPliku])
+
+    # odczytujemy zawartosc wybranego pliku
+    with open(file_path, "r", encoding="utf-8") as f:
+        file_data = f.read()
+
+    # IP odbiorcy (jesli robi sie test na jednej maszynie mozna wpisac 127.0.0.1)
+    ip = input("Podaj adres IP odbiorcy: ")
+
+    # port odbiorcy - może być np. 4444 albo 12345
+    port = int(input("Podaj port odbiorcy: "))
+
+    try:
+        # utworzenie gniazda TCP klienta
+        socketKlient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        socketKlient.connect((ip, port))
+        # wysylamy dane - konwersja do bajtow z uzyciem utf-8
+        socketKlient.sendall(file_data.encode("utf-8"))
+        print("Plik został pomyślnie wysłany!")
+        socketKlient.close()
+    except Exception as e:
+        print("Wystąpił błąd podczas wysyłania: ", e)
+
+
+def odbierzWiadomosc():
+    # port odbiorcy - może być np. 4444 albo 12345, nie musi być taki sam co nadawcy
+    # jesli tekst odbierany jest na tej samej maszynie to port nie może być taki sam!
+    port = int(input("Podaj port na którym otworzy się połączenie: "))
+    # utworzenie gniazda serwera TCP
+    socketSerwer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    socketSerwer.bind(("", port))
+    socketSerwer.listen(1)
+    print("Oczekiwanie na połączenie na porcie {port}...")
+
+    polaczenie, ip = socketSerwer.accept()
+    print(f"Nawiązano połączenie z IP: {ip}")
+    chunkiDanych = []
+
+    # odbieramy dane w petli, az nie przestanie przychodzic
+    while True:
+        data = polaczenie.recv(4096)
+        if not data:
+            break
+        chunkiDanych.append(data)
+
+    calosc = b"".join(chunkiDanych).decode("utf-8")
+    polaczenie.close()
+    socketSerwer.close()
+
+    try:
+        # probujemy zdekodowac odebrane dane jako format JSON
+        dane = json.loads(calosc)
+        slownikLiter = dane["slownik"]
+        zakodowanyTekst = dane["zakodowany"]
+        # dekodowanie tekstu przy uzyciu otrzymanego slownika kodowego
+        odkodowanyTekst = odkodujHuff(zakodowanyTekst, slownikLiter)
+    except Exception as e:
+        print("Wystąpił błąd podczas dekodowania danych: ", e)
+        return False
+
+    # pobierz nazwe pliku do zapisu odszyfrowanego tekstu
+    nazwaPliku = input("Podaj nazwe pliku do zapisania odebranego tekstu (bez rozszerzenia): ")
+    folder = ".\\odebrane"
+    sciezka = os.path.join(folder, nazwaPliku + ".txt")
+
+    with open(sciezka, "w", encoding="utf-8") as f:
+        f.write(odkodowanyTekst)
+    print("Zapisano do: " + sciezka)
+    print(f"Odebrany tekst: {odkodowanyTekst}")
+    obliczRozmiary()
+
+
+def obliczRozmiary(oryginalnyTekst, zakodowanyTekst):
+    # obliczanie rozmiarow oryginalnego i zakod. tekstu (w bajtach)
+    oryRozm = len(oryginalnyTekst.encode("utf-8"))
+    nowyRozm = math.ceil(len(zakodowanyTekst) / 8.0)
+
+    print(f"Rozmiar oryginalnego tekstu: {oryRozm} B")
+    print(f"Rozmiar zakodowanego tekstu: {nowyRozm} B")
 
 # glowna petla
 # sprawdzenie czy foldery istnieja
@@ -125,9 +218,9 @@ while True:
     if wybor == "1":
         przygotujTekst()
     elif wybor == "2":
-        print("Wyślij tekst")
+        nadajWiadomosc()
     elif wybor == "3":
-        print("Odbierz tekst")
+        odbierzWiadomosc()
     elif wybor == "4":
         print("Zakończ program")
         break
