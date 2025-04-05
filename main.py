@@ -1,5 +1,16 @@
 import os
 import heapq
+import json
+import math
+
+def zakodujHuff(tekst):
+    drzewo = zbudujDrzewo(tekst)
+    kody = utworzKody(drzewo)
+    zakodowany = ""
+    # dla kazdego znaku w tekscie zastap go jego kodem huffmanna
+    for znak in tekst:
+        zakodowany += kody[znak]
+    return kody, zakodowany
 
 def iloscWystapien(tekst):
     # zapisujemy slownik zliczajacy ilosc liter
@@ -34,13 +45,56 @@ def zbudujDrzewo(tekst):
     drzewo = heap[0][2]
     return drzewo
 
-# glowna petla
+def utworzKody(drzewo, prefix=""):
+    # jesli jesteśmy na lisciu - znak jest pojedynczy
+    if isinstance(drzewo, str):
+        # jesli tekst sklada sie z jednego znaku, przypisz kod "0"
+        if prefix == "":
+            return {drzewo: "0"}
+        return {drzewo: prefix}
+    # rozdziel drzewo na lewy i prawy podwezel
+    lewy, prawy = drzewo
+    kody = {}
+    # rekurencyjne wyznaczanie kodu dla lewego podwezla
+    kody.update(utworzKody(lewy, prefix + "0"))
+    # kod dla prawego podwezla
+    kody.update(utworzKody(prawy, prefix + "1"))
+    return kody
 
+def przygotujTekst():
+    # pobierz tekst od uzytkownika
+    tekst = input("Podaj tekst do zakodowania: ")
+    # pobierz nazwe pliku od uzytkownika
+    nazwaPliku = input("Podaj nazwę pliku (bez rozszerzenia): ")
+
+    # wykonaj kodowanie Huffmana
+    kody, zakodowanyTekst = zakodujHuff(tekst)
+
+    # obliczanie rozmiarow oryginalnego i zakod. tekstu (w bajtach)
+    oryRozm = len(tekst.encode("utf-8"))
+    nowyRozm = math.ceil(len(zakodowanyTekst) / 8.0)
+
+    print(f"Rozmiar oryginalnego tekstu: {oryRozm} B")
+    print(f"Rozmiar zakodowanego tekstu: {nowyRozm} B")
+
+    # tworzymy strukture danych do zapisu (slownik kodowy oraz zakodowany tekst)
+    data = {
+        "slownik": kody,
+        "zakodowany": zakodowanyTekst
+    }
+
+    sciezka = os.path.join(".\\przygotowane", nazwaPliku + ".txt")
+    # zapisujemy dane w formacie JSON
+    with open(sciezka, "w", encoding="utf-8") as plik:
+        json.dump(data, plik)
+    print("Plik został pomyślnie zapisany: " + sciezka)
+
+# glowna petla
 # sprawdzenie czy foldery istnieja
-if os.path.exists("./przygotowane") != True:
-    os.makedirs("./przygotowane")
-if os.path.exists("./odebrane") != True:
-    os.makedirs("./odebrane")
+if os.path.exists(".\\przygotowane") != True:
+    os.makedirs(".\\przygotowane")
+if os.path.exists(".\\odebrane") != True:
+    os.makedirs(".\\odebrane")
 
 while True:
     print("--------------\nMenu Główne:\n"
@@ -50,7 +104,7 @@ while True:
           "4. Zakończ program")
     wybor = input("Wybierz opcję: ").strip()
     if wybor == "1":
-        print("Przygotuj tekst")
+        przygotujTekst()
     elif wybor == "2":
         print("Wyślij tekst")
     elif wybor == "3":
