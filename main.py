@@ -12,6 +12,21 @@ def zakodujHuff(tekst):
         zakodowany += kody[znak]
     return kody, zakodowany
 
+def odkodujHuff(zakodowanyTekst, kody):
+    # budujemy odwrocony slownik: kod -> znak
+    odwrKody = {}
+    for klucz, wartosc in kody.items():
+        odwrKody[wartosc] = klucz
+    odkodowany = ""
+    nowy = ""
+    # odczytujemy kolejne bity i sprawdzamy czy pasuja do kodu
+    for bit in zakodowanyTekst:
+        nowy += bit
+        if nowy in odwrKody:
+            odkodowany += odwrKody[nowy]
+            nowy = ""
+    return odkodowany
+
 def iloscWystapien(tekst):
     # zapisujemy slownik zliczajacy ilosc liter
     iloscWystapien = {}
@@ -88,6 +103,10 @@ def przygotujTekst():
     with open(sciezka, "w", encoding="utf-8") as plik:
         json.dump(data, plik)
     print("Plik został pomyślnie zapisany: " + sciezka)
+
+# nadaj wiadomosc
+
+# odbierz wiadomosc
 
 # glowna petla
 # sprawdzenie czy foldery istnieja
