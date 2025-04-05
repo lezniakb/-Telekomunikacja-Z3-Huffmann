@@ -1,27 +1,22 @@
 # glowna petla
 while True:
     print("--------------\nMenu Główne:\n"
-          "1. Skompresuj tekst\n"
-          "2. Dekompresuj tekst\n"
-          "3. Skompresuj plik\n"
-          "4. Dekompresuj plik\n"
-          "5. Pokaż statystyki\n"
-          "6. Zakończ program")
+          "1. Przygotuj tekst\n"
+          "2. Wyślij tekst\n"
+          "3. Odbierz tekst\n"
+          "4. Zakończ program")
     wybor = input("Wybierz opcję: ").strip()
     if wybor == "1":
-        print("kompresuj tekst")
+        print("Przygotuj tekst")
     elif wybor == "2":
-        print("dekompresuj tekst")
+        print("Wyślij tekst")
     elif wybor == "3":
-        print("kompresuj plik")
+        print("Odbierz tekst")
     elif wybor == "4":
-        print("dekompresuj plik")
-    elif wybor == "5":
-        print("statystyki")
-    elif wybor == "6":
+        print("Zakończ program")
         break
     else:
         print("Wybrano niewłaściwą opcję!")
     input("Wciśnij enter aby kontynuować...")
 
-print("Program zakończony pomyślnie")
+print("\nProgram zakończony pomyślnie")
