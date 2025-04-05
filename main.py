@@ -1,4 +1,5 @@
 import os
+import heapq
 
 def iloscWystapien(tekst):
     # zapisujemy slownik zliczajacy ilosc liter
@@ -14,6 +15,24 @@ def iloscWystapien(tekst):
     # zwroc slownik czestotliwosci wystapien
     return iloscWystapien
 
+def zbudujDrzewo(tekst):
+    wystapienia = iloscWystapien(tekst)
+    heap = []
+    licznik = 0  # licznik unikalnych elementow do rozwiazywania remisu
+    # dla kazdego znaku dajemy krotke (czestosc, licznik, znak)
+    for znak, cz in wystapienia.items():
+        heapq.heappush(heap, (cz, licznik, znak))
+        licznik += 1
+    # laczymy wezly drzewa az zostanie jeden element
+    while len(heap) > 1:
+        cz1, licznik1, lewy = heapq.heappop(heap)
+        cz2, licznik2, prawy = heapq.heappop(heap)
+        wezel = (lewy, prawy)  # nowy wezel laczacy dwa wezly
+        heapq.heappush(heap, (cz1 + cz2, licznik, wezel))
+        licznik += 1
+    # ostatni element w kopcu to cale drzewo Huffmana
+    drzewo = heap[0][2]
+    return drzewo
 
 # glowna petla
 
