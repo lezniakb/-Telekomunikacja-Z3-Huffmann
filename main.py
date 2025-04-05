@@ -1,5 +1,20 @@
 import os
 
+def iloscWystapien(tekst):
+    # zapisujemy slownik zliczajacy ilosc liter
+    iloscWystapien = {}
+    for znak in tekst:
+        # dla kazdego znaku w tekscie
+        if znak in iloscWystapien:
+            # jesli znak jest juz w slowniku, to dodaj kolejne wystapienie
+            iloscWystapien[znak] += 1
+        else:
+            # jesli znaku nie ma w slowniku, to dodaj nowy element i przypisz mu =1
+            iloscWystapien[znak] = 1
+    # zwroc slownik czestotliwosci wystapien
+    return iloscWystapien
+
+
 # glowna petla
 
 # sprawdzenie czy foldery istnieja
