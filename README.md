@@ -1,5 +1,5 @@
 # Telekomunikacja Zadanie 3
-### Protokół XModem
+### Algorytm Huffmanna i transmisja wiadomości
 ### Opis projektu
 [PL] Repozytorium zawiera algorytm implementujący kod Huffmanna do zmniejszania rozmiaru wysyłanej wiadomości. Rozwiązanie zawiera zarówno kodowanie, odkodowanie komunikatów, jak i wysyłanie oraz odbieranie wiadomości wewnątrz sieci lokalnej. Zadanie realizowane jest w ramach przedmiotu "*Telekomunikacja i przetwarzanie sygnałów*" na Politechnice Łódzkiej - 4 semestr na kierunku Informatyka Stosowana.
 
