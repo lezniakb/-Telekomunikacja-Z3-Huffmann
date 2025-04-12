@@ -7,10 +7,11 @@ import socket
 def zakodujHuff(tekst):
     drzewo = zbudujDrzewo(tekst)
     kody = utworzKody(drzewo)
-    zakodowany = ""
+    zakodowanyCzesci = []
     # dla kazdego znaku w tekscie zastap go jego kodem huffmanna
     for znak in tekst:
-        zakodowany += kody[znak]
+        zakodowanyCzesci.append(kody[znak])
+    zakodowany = "".join(zakodowanyCzesci)
     return kody, zakodowany
 
 def odkodujHuff(zakodowanyTekst, kody):
@@ -147,17 +148,15 @@ def nadajWiadomosc():
 
 
 def odbierzWiadomosc():
-    # port odbiorcy - może być np. 4444 albo 12345, nie musi być taki sam co nadawcy
-    # jesli tekst odbierany jest na tej samej maszynie to port nie może być taki sam!
     port = int(input("Podaj port na którym otworzy się połączenie: "))
     # utworzenie gniazda serwera TCP
     socketSerwer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     socketSerwer.bind(("", port))
     socketSerwer.listen(1)
-    print("Oczekiwanie na połączenie na porcie {port}...")
+    print(f"Oczekiwanie na połączenie na porcie {port}...")
 
-    polaczenie, ip = socketSerwer.accept()
-    print(f"Nawiązano połączenie z IP: {ip}")
+    polaczenie, adres = socketSerwer.accept()
+    print(f"Nawiązano połączenie z IP: {adres[0]}")
     chunkiDanych = []
 
     # odbieramy dane w petli, az nie przestanie przychodzic
@@ -191,7 +190,7 @@ def odbierzWiadomosc():
         f.write(odkodowanyTekst)
     print("Zapisano do: " + sciezka)
     print(f"Odebrany tekst: {odkodowanyTekst}")
-    obliczRozmiary()
+    obliczRozmiary(zakodowanyTekst, odkodowanyTekst)
 
 
 def obliczRozmiary(oryginalnyTekst, zakodowanyTekst):
