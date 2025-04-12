@@ -8,6 +8,9 @@
 ## Opis zadania
 Dla podanego tekstu należy opracować słownik kodowy, umieć uzasadnić jego zawartość. Kolejnym zadaniem jest zbudowanie programów, które kodują plik tekstowy i przesyła go za pomocą metody gniazd sieciowych (socked) na inny komputer, na którym jest zaimplementowany drugi progam, którego zadaniem jest odebranie, odkodowanie i zapisanie go na dysku
 
+## Demonstracja (Youtube) - WARTO OBEJRZEĆ!!
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/zWzLEwuVgTQ/0.jpg)](https://www.youtube.com/watch?v=zWzLEwuVgTQ)
+
 # Instrukcja
 1. Uruchom main.py w dwóch osobnych terminalach (może być powershell i pycharm)
 2. Wybierz opcję **"Przygotuj tekst"** z menu głównego i wprowadź komunikat. Podaj nazwę pliku, pod którą komunikat ma zostać zakodowany i zapisany. Zweryfikuj poprawność zapisania komunikatu do folderu "*.\przygotowane\nazwa_pliku.txt*".
